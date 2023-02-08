@@ -8,7 +8,9 @@ import com.ikapurwanti.bwamov.onboarding.OnboardingOneActivity
 /*
     ini adalah activity pertama yang akan di run
     tidak ada fitur spesial di sini
-    hanya melakukan pending beberapa detik saja
+    hanya melakukan pending beberapa detik saja.
+    ini perubahannya yang kedia td gagal
+    disini saya menambahkan beberapa kata untuk tes
  */
 
 class SplashScreenActivity : AppCompatActivity() {
