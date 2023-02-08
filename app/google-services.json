@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "773689191983",
+    "project_id": "bwa-mov-6a36e",
+    "storage_bucket": "bwa-mov-6a36e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773689191983:android:6af2a6925ca0f62154e0da",
+        "android_client_info": {
+          "package_name": "com.ikapurwanti.bwamov"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773689191983-rnrqh2pp1mlvlv5b1kud0trgh2tqeh6t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMMWZp7M_N2sqG6rpsCAfyKWG1XXn1KUM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773689191983-rnrqh2pp1mlvlv5b1kud0trgh2tqeh6t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
