@@ -3,12 +3,11 @@ package com.ikapurwanti.bwamov.sign.signup
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.database.*
 import com.ikapurwanti.bwamov.R
 import com.ikapurwanti.bwamov.sign.signin.User
+import com.ikapurwanti.bwamov.utils.Preferences
 import kotlinx.android.synthetic.main.activity_sign_up.*
 
 class SignUpActivity : AppCompatActivity() {
@@ -18,23 +17,23 @@ class SignUpActivity : AppCompatActivity() {
     lateinit var sNama : String
     lateinit var sEmail : String
 
-    lateinit var mDatabaseReference: DatabaseReference
-    lateinit var mFirebaseIntance : FirebaseDatabase
-    lateinit var mDatabase : DatabaseReference
+   private lateinit var mFirebaseDatabase: DatabaseReference
+   private lateinit var mFirebaseInstance : FirebaseDatabase
+   private lateinit var mDatabase : DatabaseReference
+
+
+    private lateinit var preferences: Preferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
-        mFirebaseIntance = FirebaseDatabase.getInstance()
+        mFirebaseInstance = FirebaseDatabase.getInstance()
         mDatabase = FirebaseDatabase.getInstance().getReference()
-        mDatabaseReference = mFirebaseIntance.getReference("User")
+        mFirebaseDatabase = mFirebaseInstance.getReference("User")
 
-//        val btn_lanjutkan = findViewById(R.id.btn_lanjutkan) as Button
-//        val et_username = findViewById(R.id.et_username) as EditText
-//        val et_password = findViewById(R.id.et_password) as EditText
-//        val et_nama = findViewById(R.id.et_nama) as EditText
-//        val et_email = findViewById(R.id.et_email) as EditText
+        preferences = Preferences(this)
+
 
         btn_lanjutkan.setOnClickListener{
             sUsername = et_username.text.toString()
@@ -55,32 +54,47 @@ class SignUpActivity : AppCompatActivity() {
                 et_email.error = "Silakan isi email Anda"
                 et_email.requestFocus()
             } else {
-                saveUsername (sUsername, sPassword, sNama, sEmail)
+                var statusUsername = sUsername.indexOf(".")
+                if (statusUsername >=0) {
+                    et_username.error = "Silahkan tulis Username Anda tanpa ."
+                    et_username.requestFocus()
+                } else {
+                    saveUsername(sUsername, sPassword, sNama, sEmail)
+                }
+               // saveUsername (sUsername, sPassword, sNama, sEmail)
             }
         }
     }
 
     private fun saveUsername(sUsername: String, sPassword: String, sNama: String, sEmail: String) {
-        var user = User()
+        val user = User()
         user.username = sUsername
         user.password = sPassword
         user.nama = sNama
         user.email = sEmail
 
         if (sUsername != null){
-            checingUsername(sUsername, user)
+            checkingUsername(sUsername, user)
         }
     }
 
-    private fun checingUsername(sUsername: String, data: User) {
-        mDatabaseReference.child(sUsername).addValueEventListener(object : ValueEventListener{
+    private fun checkingUsername(sUsername: String, data: User) {
+        mFirebaseDatabase.child(sUsername).addValueEventListener(object : ValueEventListener{
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var user = dataSnapshot.getValue(User::class.java)
+                val user = dataSnapshot.getValue(User::class.java)
                 if (user == null){
-                    mDatabaseReference.child(sUsername).setValue(data)
+                    mFirebaseDatabase.child(sUsername).setValue(data)
 
-                    var goSignupPhotoScreen = Intent(this@SignUpActivity, SignUpPhotoscreenActivity::class.java).putExtra("nama", data.nama) // berpindah ke activity lain dengan membawa data
-                    startActivity(goSignupPhotoScreen)
+                    preferences.setValue("nama", data.nama.toString())
+                    preferences.setValue("user", data.username.toString())
+                    preferences.setValue("saldo", "")
+                    preferences.setValue("url", "")
+                    preferences.setValue("email", data.email.toString())
+                    preferences.setValue("status", "1")
+
+                    val intent = Intent(this@SignUpActivity,
+                        SignUpPhotoscreenActivity::class.java).putExtra("data", data)
+                    startActivity(intent)
 
                 } else {
                     Toast.makeText(this@SignUpActivity, "User sudah digunakan", Toast.LENGTH_LONG).show()
